@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Post } from '../post.model';
 
 @Component({
   selector: 'app-create-post',
@@ -11,5 +13,9 @@ export class CreatePostComponent implements OnInit {
 
   ngOnInit() { }
 
-  onCreatePost() { }
+  onCreatePost(form: NgForm) { 
+    if (form.invalid) return;
+
+    form.resetForm();
+  }
 }
