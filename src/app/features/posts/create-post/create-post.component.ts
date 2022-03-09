@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Post } from '../post.model';
+import { PostsService } from "../posts.service";
 
 @Component({
   selector: 'app-create-post',
@@ -9,12 +9,16 @@ import { Post } from '../post.model';
 })
 
 export class CreatePostComponent implements OnInit {
-  constructor() { }
+  constructor(private postsService: PostsService) { }
 
   ngOnInit() { }
 
-  onCreatePost(form: NgForm) { 
+  onCreatePost(form: NgForm) {
     if (form.invalid) return;
+
+    console.log(form.value);
+
+    this.postsService.addPost(form.value);
 
     form.resetForm();
   }
