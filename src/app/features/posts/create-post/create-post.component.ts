@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { PostsService } from "../posts.service";
+import { PostsService } from '../posts.service';
 
 @Component({
   selector: 'app-create-post',
   templateUrl: 'create-post.component.html',
-  styleUrls: ['create-post.component.scss']
+  styleUrls: ['create-post.component.scss'],
 })
-
 export class CreatePostComponent implements OnInit {
-  constructor(private postsService: PostsService) { }
+  constructor(private postsService: PostsService) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   onCreatePost(form: NgForm) {
     if (form.invalid) return;

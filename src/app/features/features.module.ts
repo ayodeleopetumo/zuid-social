@@ -9,4 +9,4 @@ import { PostsModule } from './posts/posts.module';
   declarations: [],
   providers: [],
 })
-export class FeaturesModule { }
+export class FeaturesModule {}
