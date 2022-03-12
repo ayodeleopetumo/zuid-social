@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
@@ -17,15 +17,18 @@ enum Mode {
 export class CreatePostComponent implements OnInit {
   post!: Post;
   isLoading = false;
+  form!: FormGroup;
+
   private pageMode = Mode.CREATE;
   private postId: string | null = null;
 
   constructor(
     private postsService: PostsService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit() {
+    this.initForm();
     this.isLoading = true;
     this.activatedRoute.paramMap.subscribe((param: ParamMap) => {
       if (param.has('postId')) {
@@ -40,6 +43,10 @@ export class CreatePostComponent implements OnInit {
               content: post.content,
               title: post.title,
             };
+            this.form.setValue({
+              title: post.title,
+              content: post.content
+            })
           });
       } else {
         this.isLoading = false;
@@ -49,17 +56,24 @@ export class CreatePostComponent implements OnInit {
     });
   }
 
-  onSavePost(form: NgForm) {
-    if (form.invalid) return;
+  initForm() {
+    this.form = new FormGroup({
+      title: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      content: new FormControl('', [Validators.required])
+    })
+  }
+
+  onSavePost() {
+    if (this.form.invalid) return;
 
     this.isLoading = true;
     if (this.pageMode === Mode.CREATE) {
-      this.postsService.addPost(form.value);
+      this.postsService.addPost(this.form.value);
     } else {
       this.postsService.updatePost({
         id: this.postId!,
-        title: form.value.title,
-        content: form.value.content,
+        title: this.form.get('title')?.value,
+        content: this.form.get('content')?.value
       });
     }
   }
