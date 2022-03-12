@@ -14,6 +14,8 @@ import { ListPostComponent } from './list-post/list-post.component';
 
 // Service
 import { PostsService } from './posts.service';
+import { RouterModule } from "@angular/router";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
   imports: [
@@ -25,6 +27,8 @@ import { PostsService } from './posts.service';
     MatButtonModule,
     MatInputModule,
     MatExpansionModule,
+    RouterModule,
+    MatProgressSpinnerModule,
   ],
   exports: [CreatePostComponent, ListPostComponent],
   declarations: [CreatePostComponent, ListPostComponent],

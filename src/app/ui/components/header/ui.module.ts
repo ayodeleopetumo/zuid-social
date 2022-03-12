@@ -3,9 +3,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 // Components
 import { HeaderComponent } from './header.component';
+import { RouterModule } from "@angular/router";
+import { MatButtonModule } from "@angular/material/button";
 
 @NgModule({
-  imports: [MatToolbarModule],
+  imports: [MatToolbarModule, RouterModule, MatButtonModule],
   exports: [HeaderComponent],
   declarations: [HeaderComponent],
   providers: [],
