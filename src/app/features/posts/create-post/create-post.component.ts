@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
+import { mimeTypeValidator } from "../mime-type.validator";
 
 enum Mode {
   CREATE,
@@ -61,7 +62,7 @@ export class CreatePostComponent implements OnInit {
     this.form = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.minLength(3)]),
       content: new FormControl('', [Validators.required]),
-      image: new FormControl(null, Validators.required)
+      image: new FormControl(null, Validators.required, mimeTypeValidator)
     })
   }
 
