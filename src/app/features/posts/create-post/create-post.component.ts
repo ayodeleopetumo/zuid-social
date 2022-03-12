@@ -18,6 +18,7 @@ export class CreatePostComponent implements OnInit {
   post!: Post;
   isLoading = false;
   form!: FormGroup;
+  imagePreview!: string;
 
   private pageMode = Mode.CREATE;
   private postId: string | null = null;
@@ -59,7 +60,8 @@ export class CreatePostComponent implements OnInit {
   initForm() {
     this.form = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      content: new FormControl('', [Validators.required])
+      content: new FormControl('', [Validators.required]),
+      image: new FormControl(null, Validators.required)
     })
   }
 
@@ -76,5 +78,19 @@ export class CreatePostComponent implements OnInit {
         content: this.form.get('content')?.value
       });
     }
+  }
+
+  onImageSelected(evt: Event) {
+    const file = (evt.target as HTMLInputElement).files![0];
+    this.form.patchValue({image: file});
+    this.form.get('image')?.updateValueAndValidity();
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    }
+    reader.readAsDataURL(file);
+    console.log(file);
+    console.log(this.form);
   }
 }
