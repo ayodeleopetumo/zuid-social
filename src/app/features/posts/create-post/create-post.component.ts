@@ -32,6 +32,18 @@ export class CreatePostComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.isLoading = true;
+    this.getPost();
+  }
+
+  initForm() {
+    this.form = new FormGroup({
+      title: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      content: new FormControl('', [Validators.required]),
+      image: new FormControl(null, Validators.required, mimeTypeValidator)
+    })
+  }
+
+  getPost() {
     this.activatedRoute.paramMap.subscribe((param: ParamMap) => {
       if (param.has('postId')) {
         this.pageMode = Mode.EDIT;
@@ -44,10 +56,12 @@ export class CreatePostComponent implements OnInit {
               id: post._id,
               content: post.content,
               title: post.title,
+              image: ''
             };
             this.form.setValue({
               title: post.title,
-              content: post.content
+              content: post.content,
+              image: post.image
             })
           });
       } else {
@@ -56,14 +70,6 @@ export class CreatePostComponent implements OnInit {
         this.postId = null;
       }
     });
-  }
-
-  initForm() {
-    this.form = new FormGroup({
-      title: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      content: new FormControl('', [Validators.required]),
-      image: new FormControl(null, Validators.required, mimeTypeValidator)
-    })
   }
 
   onSavePost() {
@@ -76,7 +82,8 @@ export class CreatePostComponent implements OnInit {
       this.postsService.updatePost({
         id: this.postId!,
         title: this.form.get('title')?.value,
-        content: this.form.get('content')?.value
+        content: this.form.get('content')?.value,
+        image: this.form.get('image')?.value
       });
     }
   }
@@ -91,7 +98,5 @@ export class CreatePostComponent implements OnInit {
       this.imagePreview = reader.result as string;
     }
     reader.readAsDataURL(file);
-    console.log(file);
-    console.log(this.form);
   }
 }
