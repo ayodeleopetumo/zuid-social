@@ -8,6 +8,7 @@ import { UIModule } from './ui/components/header/ui.module';
 
 import { AppComponent } from './app.component';
 import { FeaturesModule } from './features/features.module';
+import { CoreModule } from "./core/core.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,6 +17,7 @@ import { FeaturesModule } from './features/features.module';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatToolbarModule,
+    CoreModule,
     UIModule,
     FeaturesModule,
   ],
