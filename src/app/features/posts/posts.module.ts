@@ -16,21 +16,23 @@ import { ListPostComponent } from './list-post/list-post.component';
 import { PostsService } from './posts.service';
 import { RouterModule } from "@angular/router";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatPaginatorModule } from "@angular/material/paginator";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    FormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatInputModule,
-    MatExpansionModule,
-    RouterModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-  ],
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        FormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatInputModule,
+        MatExpansionModule,
+        RouterModule,
+        MatProgressSpinnerModule,
+        ReactiveFormsModule,
+        MatPaginatorModule,
+    ],
   exports: [CreatePostComponent, ListPostComponent],
   declarations: [CreatePostComponent, ListPostComponent],
   providers: [PostsService],
