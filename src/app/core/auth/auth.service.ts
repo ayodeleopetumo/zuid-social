@@ -28,7 +28,6 @@ export class AuthService {
     this.http
       .post<{ token: string, expiresIn: number, userId: string }>('http://localhost:3000/api/auth/login', authData)
       .subscribe((response) => {
-        console.log(response)
         if (response.token) {
           const expiresInDuration = response.expiresIn;
           this.setTokenTimer(expiresInDuration);
