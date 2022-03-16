@@ -3,11 +3,11 @@ import { NgForm } from "@angular/forms";
 import { AuthService } from "../auth.service";
 
 @Component({
-  templateUrl: 'login.component.html',
-  styleUrls: ['login.component.scss']
+  templateUrl: 'signup.component.html',
+  styleUrls: ['signup.component.scss']
 })
 
-export class LoginComponent implements OnInit {
+export class SignupComponent implements OnInit {
   isLoading = false;
 
   constructor(private authService: AuthService) {}
@@ -17,6 +17,6 @@ export class LoginComponent implements OnInit {
   onLogin(form: NgForm) {
     if (form.invalid) return;
     console.log(form.value);
-    this.authService.loginUser(form.value.email, form.value.password);
+    this.authService.createUser(form.value.email, form.value.password)
   }
 }
