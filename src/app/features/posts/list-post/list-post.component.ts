@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { PostsService } from '../posts.service';
 import { Post } from '../post.model';
 import { PageEvent } from "@angular/material/paginator";
-import { count } from "rxjs";
+import { AuthService } from "../../../core/auth/auth.service";
 
 @Component({
   selector: 'app-list-post',
@@ -18,7 +18,9 @@ export class ListPostComponent implements OnInit {
   currentPage = 1
   pageSizeOptions = [1, 2, 5, 10];
 
-  constructor(private postsService: PostsService) {}
+  isUserAuthenticated = false;
+
+  constructor(private postsService: PostsService, private authService: AuthService) {}
 
   ngOnInit() {
     this.isLoading = true;
@@ -30,6 +32,8 @@ export class ListPostComponent implements OnInit {
         this.totalPosts = data.count;
         this.posts = data.posts;
       });
+    this.isUserAuthenticated = this.authService.getIsAuthenticated();
+    this.authService.getAuthStatus().subscribe(status => this.isUserAuthenticated = status);
   }
 
   onPostDelete(postId: string) {

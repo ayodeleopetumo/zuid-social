@@ -1,8 +1,10 @@
 const express = require("express");
-const multer = require("multer")
+const multer = require("multer");
+
 const router = express.Router();
 
 const Post = require("../models/post");
+const checkAuth = require('../middleware/check-auth');
 
 const MIME_TYPE_MAP = {
   'image/png': 'png',
@@ -27,7 +29,7 @@ const storage = multer.diskStorage({
   }
 })
 
-router.post("", multer({storage}).single("image"), (req, res, next) => {
+router.post("", checkAuth, multer({storage}).single("image"), (req, res, next) => {
   const url = req.protocol + '://' + req.get('host');
 
   const post = new Post({
@@ -72,7 +74,7 @@ router.get("", (req, res, next) => {
     .catch((error) => console.log(error));
 });
 
-router.put("/:id", multer({storage}).single("image"), (req, res, next) => {
+router.put("/:id", checkAuth, multer({storage}).single("image"), (req, res, next) => {
   let url;
   const post = new Post({
     _id: req.body.id,
@@ -106,7 +108,7 @@ router.get("/:id", (req, res, next) => {
     .catch((error) => console.log(error));
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", checkAuth, (req, res, next) => {
   Post.deleteOne({ _id: req.params.id }).then((d) => {
     res.status(200).json({ message: "Delete method" });
   });
