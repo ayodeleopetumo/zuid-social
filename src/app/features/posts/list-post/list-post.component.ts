@@ -17,13 +17,14 @@ export class ListPostComponent implements OnInit {
   postsPerPage = 1;
   currentPage = 1
   pageSizeOptions = [1, 2, 5, 10];
-
+  userId!: string;
   isUserAuthenticated = false;
 
   constructor(private postsService: PostsService, private authService: AuthService) {}
 
   ngOnInit() {
     this.isLoading = true;
+    this.userId = this.authService.getUserId();
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.postsService
       .getPostUpdateListener()
@@ -33,7 +34,10 @@ export class ListPostComponent implements OnInit {
         this.posts = data.posts;
       });
     this.isUserAuthenticated = this.authService.getIsAuthenticated();
-    this.authService.getAuthStatus().subscribe(status => this.isUserAuthenticated = status);
+    this.authService.getAuthStatus().subscribe(status => {
+      this.isUserAuthenticated = status
+      this.userId = this.authService.getUserId();
+    });
   }
 
   onPostDelete(postId: string) {

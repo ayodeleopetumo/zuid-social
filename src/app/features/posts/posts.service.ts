@@ -19,17 +19,19 @@ export class PostsService {
       .pipe(
         map((postData) => {
           return {
-            posts: postData.posts.map((post: { title: any; content: any; _id: any; image: any; }) => ({
+            posts: postData.posts.map((post: { title: any; content: any; _id: any; image: any; creator: any }) => ({
               title: post.title,
               content: post.content,
               id: post._id,
-              image: post.image
+              image: post.image,
+              creator: post.creator
             })),
             count: postData.count
           }
         })
       )
       .subscribe((data) => {
+        console.log(data);
         this.posts = data.posts;
         this.postsUpdated.next({
           posts: [...this.posts],
@@ -43,7 +45,7 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return this.http.get<{ _id: string; content: string; title: string, image: string }>(
+    return this.http.get<{ _id: string; content: string; title: string, image: string, creator: string }>(
       `http://localhost:3000/api/posts/${id}`
     );
   }
