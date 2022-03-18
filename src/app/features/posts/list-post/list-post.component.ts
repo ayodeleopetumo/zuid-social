@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { PostsService } from '../posts.service';
 import { Post } from '../post.model';
 import { PageEvent } from "@angular/material/paginator";
-import { AuthService } from "../../../core/auth/auth.service";
+import { AuthService } from "../../../core/components/auth/auth.service";
 
 @Component({
   selector: 'app-list-post',

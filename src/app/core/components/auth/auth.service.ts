@@ -20,23 +20,29 @@ export class AuthService {
     const authData: AuthData = { email, password };
     this.http
       .post('http://localhost:3000/api/auth/signup', authData)
-      .subscribe((res) => console.log(res));
+      .subscribe({
+        next: res => this.router.navigate(['/']),
+        error: error => this.authTokenStatus.next(false)
+      });
   }
 
   loginUser(email: string, password: string) {
     const authData: AuthData = { email, password };
     this.http
       .post<{ token: string, expiresIn: number, userId: string }>('http://localhost:3000/api/auth/login', authData)
-      .subscribe((response) => {
-        if (response.token) {
-          const expiresInDuration = response.expiresIn;
-          this.setTokenTimer(expiresInDuration);
-          this.saveToStorage(response.token, response.expiresIn, response.userId);
-          this.isAuthenticated = true;
-          this.authTokenStatus.next(true);
-          this.userId = response.userId
-          this.router.navigate(['/']);
-        }
+      .subscribe({
+        next: (response) => {
+          if (response.token) {
+            const expiresInDuration = response.expiresIn;
+            this.setTokenTimer(expiresInDuration);
+            this.saveToStorage(response.token, response.expiresIn, response.userId);
+            this.isAuthenticated = true;
+            this.authTokenStatus.next(true);
+            this.userId = response.userId
+            this.router.navigate(['/']);
+          }
+        },
+        error: () => this.authTokenStatus.next(false)
       });
   }
 

@@ -12,7 +12,11 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.authService.getAuthStatus().subscribe(status => {
+      this.isLoading = false;
+    })
+  }
 
   onLogin(form: NgForm) {
     if (form.invalid) return;

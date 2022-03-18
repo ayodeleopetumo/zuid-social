@@ -10,6 +10,6 @@ module.exports = (req, res, next) => {
     }
     next();
   } catch (err) {
-    res.status(401).json({message: 'Auth failed!'});
+    return res.status(401).json({message: 'Auth failed! - check auth'});
   }
 }
