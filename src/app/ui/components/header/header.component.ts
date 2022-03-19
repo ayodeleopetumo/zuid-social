@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { AuthService } from "../../../core/components/auth/auth.service";
-import { Subject, takeUntil } from "rxjs";
+import { AuthService } from '../../../features/auth/auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +16,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isUserAuthenticated = this.authService.getIsAuthenticated();
-    this.authService.getAuthStatus().pipe(takeUntil(this.destroyed$)).subscribe(status => this.isUserAuthenticated = status);
+    this.authService
+      .getAuthStatus()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((status) => (this.isUserAuthenticated = status));
   }
 
   onLogout() {

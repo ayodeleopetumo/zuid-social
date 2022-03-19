@@ -4,37 +4,50 @@ import { map, Subject } from 'rxjs';
 
 import { Post } from './post.model';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
+
+const API_URL = `${environment.apiBaseUrl}/posts/`;
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<{ posts: Post[], count: number }>();
+  private postsUpdated = new Subject<{ posts: Post[]; count: number }>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
   getPosts(postsPerPage: number, currentPage: number) {
-    const queryParams = `?pageSize=${postsPerPage}&page=${currentPage}`
+    const queryParams = `?pageSize=${postsPerPage}&page=${currentPage}`;
     this.http
-      .get<{ message: string; posts: any, count: number }>(`http://localhost:3000/api/posts${queryParams}`)
+      .get<{ message: string; posts: any; count: number }>(
+        `${API_URL}${queryParams}`
+      )
       .pipe(
         map((postData) => {
           return {
-            posts: postData.posts.map((post: { title: any; content: any; _id: any; image: any; creator: any }) => ({
-              title: post.title,
-              content: post.content,
-              id: post._id,
-              image: post.image,
-              creator: post.creator
-            })),
-            count: postData.count
-          }
+            posts: postData.posts.map(
+              (post: {
+                title: any;
+                content: any;
+                _id: any;
+                image: any;
+                creator: any;
+              }) => ({
+                title: post.title,
+                content: post.content,
+                id: post._id,
+                image: post.image,
+                creator: post.creator,
+              })
+            ),
+            count: postData.count,
+          };
         })
       )
       .subscribe((data) => {
         this.posts = data.posts;
         this.postsUpdated.next({
           posts: [...this.posts],
-          count: data.count
+          count: data.count,
         });
       });
   }
@@ -44,9 +57,13 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return this.http.get<{ _id: string; content: string; title: string, image: string, creator: string }>(
-      `http://localhost:3000/api/posts/${id}`
-    );
+    return this.http.get<{
+      _id: string;
+      content: string;
+      title: string;
+      image: string;
+      creator: string;
+    }>(`${API_URL}${id}`);
   }
 
   addPost(post: Post) {
@@ -55,10 +72,7 @@ export class PostsService {
     postData.append('content', post.content);
     postData.append('image', post.image!, post.title);
     this.http
-      .post<{ message: string; post: Post }>(
-        'http://localhost:3000/api/posts',
-        postData
-      )
+      .post<{ message: string; post: Post }>(API_URL, postData)
       .subscribe(() => {
         this.router.navigate(['/']);
       });
@@ -73,17 +87,15 @@ export class PostsService {
       postData.append('content', updateData.content);
       postData.append('image', updateData.image, updateData.title);
     } else {
-      postData = {...updateData}
+      postData = { ...updateData };
     }
 
-    this.http
-      .put(`http://localhost:3000/api/posts/${updateData.id}`, postData)
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
+    this.http.put(`${API_URL}${updateData.id}`, postData).subscribe(() => {
+      this.router.navigate(['/']);
+    });
   }
 
   deletePost(postId: string) {
-    return this.http.delete(`http://localhost:3000/api/posts/${postId}`);
+    return this.http.delete(`${API_URL}${postId}`);
   }
 }

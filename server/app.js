@@ -2,14 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 
-const postRoutes = require('./routes/posts');
-const authRouters = require('./routes/auth');
+const postRoutes = require("./routes/posts");
+const authRouters = require("./routes/auth");
 
 const app = express();
 
 mongoose
   .connect(
-    "mongodb+srv://ayodeleopetumo:esq5gu5Oisl0Kr5i@clusterzuid.gkniv.mongodb.net/zuid-social?retryWrites=true&w=majority"
+    `mongodb+srv://ayodeleopetumo:${process.env.MONGO_ATLAS_PWD}@clusterzuid.gkniv.mongodb.net/zuid-social?retryWrites=true&w=majority`
   )
   .then(() => {
     console.log("Connection to DB established!");
@@ -18,7 +18,7 @@ mongoose
 
 app.use(express.json());
 
-app.use('/images', express.static(path.join('server/images')))
+app.use("/images", express.static(path.join("server/images")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/posts', postRoutes);
-app.use('/api/auth', authRouters);
+app.use("/api/posts", postRoutes);
+app.use("/api/auth", authRouters);
 
 module.exports = app;

@@ -17,13 +17,13 @@ exports.createUser = (req, res, next) => {
           result,
         });
       })
-      .catch((err) => {
+      .catch(() => {
         res.status(500).json({
-          message: 'Invalid auth credentials!'
+          message: "Invalid auth credentials!",
         });
       });
   });
-}
+};
 
 exports.userLogin = (req, res, next) => {
   let returnedUser;
@@ -46,7 +46,7 @@ exports.userLogin = (req, res, next) => {
       }
       const token = jwt.sign(
         { email: returnedUser.email, userId: returnedUser._id },
-        "this_should_be_a_longer_secret_key",
+        process.env.JWT_KEY,
         {
           expiresIn: "1h",
         }
@@ -57,9 +57,9 @@ exports.userLogin = (req, res, next) => {
         userId: returnedUser._id,
       });
     })
-    .catch((err) => {
+    .catch(() => {
       return res.status(500).json({
         message: "Invalid auth credentials!",
       });
     });
-}
+};
