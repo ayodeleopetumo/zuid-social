@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
 import { mimeTypeValidator } from "../mime-type.validator";
+import { AuthService } from "../../../core/components/auth/auth.service";
+import { Subject, takeUntil } from "rxjs";
 
 enum Mode {
   CREATE,
@@ -15,7 +17,7 @@ enum Mode {
   templateUrl: 'create-post.component.html',
   styleUrls: ['create-post.component.scss'],
 })
-export class CreatePostComponent implements OnInit {
+export class CreatePostComponent implements OnInit, OnDestroy {
   post!: Post;
   isLoading = false;
   form!: FormGroup;
@@ -23,15 +25,18 @@ export class CreatePostComponent implements OnInit {
 
   private pageMode = Mode.CREATE;
   private postId: string | null = null;
+  private destroyed$ = new Subject<void>();
 
   constructor(
     private postsService: PostsService,
     private activatedRoute: ActivatedRoute,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.initForm();
     this.isLoading = true;
+    this.authService.getAuthStatus().pipe(takeUntil(this.destroyed$)).subscribe(() => this.isLoading = false);
+    this.initForm();
     this.getPost();
   }
 
@@ -44,12 +49,13 @@ export class CreatePostComponent implements OnInit {
   }
 
   getPost() {
-    this.activatedRoute.paramMap.subscribe((param: ParamMap) => {
+    this.activatedRoute.paramMap.pipe(takeUntil(this.destroyed$)).subscribe((param: ParamMap) => {
       if (param.has('postId')) {
         this.pageMode = Mode.EDIT;
         this.postId = param.get('postId')!;
         this.postsService
           .getPost(this.postId)
+          .pipe(takeUntil(this.destroyed$))
           .subscribe((post) => {
             this.isLoading = false;
             this.post = {
@@ -99,5 +105,10 @@ export class CreatePostComponent implements OnInit {
       this.imagePreview = reader.result as string;
     }
     reader.readAsDataURL(file);
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }

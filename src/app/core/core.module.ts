@@ -11,18 +11,26 @@ import { FormsModule } from "@angular/forms";
 
 import { throwIfAlreadyLoaded } from "./guards/module-import.gaurd";
 
-import { LoginComponent } from "./auth/login/login.component";
-import { SignupComponent } from "./auth/signup/signup.component";
+import { LoginComponent } from "./components/auth/login/login.component";
+import { SignupComponent } from "./components/auth/signup/signup.component";
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
+import { ErrorInterceptor } from "./interceptors/error.inteceptor";
+import { ErrorComponent } from "./components/error/error.component";
+import { MatDialogModule } from "@angular/material/dialog";
 
 @NgModule({
-  imports: [CommonModule, MatFormFieldModule, MatProgressSpinnerModule, MatCardModule, MatInputModule, MatButtonModule, FormsModule],
-  exports: [LoginComponent, SignupComponent],
-  declarations: [LoginComponent, SignupComponent],
+  imports: [CommonModule, MatFormFieldModule, MatProgressSpinnerModule, MatCardModule, MatInputModule, MatButtonModule, FormsModule, MatDialogModule],
+  exports: [LoginComponent, SignupComponent, ErrorComponent],
+  declarations: [LoginComponent, SignupComponent, ErrorComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true
     }
   ],
