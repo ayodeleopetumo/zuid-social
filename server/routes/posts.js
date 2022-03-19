@@ -50,7 +50,11 @@ router.post("", checkAuth, multer({storage}).single("image"), (req, res, next) =
         },
       });
     })
-    .catch(() => console.log("Error saving post"));
+    .catch(() => {
+      res.status(500).json({
+        message: 'Creating post failed!'
+      })
+    });
 });
 
 router.get("", (req, res, next) => {
@@ -73,7 +77,11 @@ router.get("", (req, res, next) => {
         count
       });
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Error fetching all posts!'
+      })
+    });
 });
 
 router.put("/:id", checkAuth, multer({storage}).single("image"), (req, res, next) => {
@@ -93,7 +101,6 @@ router.put("/:id", checkAuth, multer({storage}).single("image"), (req, res, next
 
 
   Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post).then((result) => {
-    console.log(result);
     if (result.modifiedCount > 0) {
       res.status(200).json({
         message: "Update successful",
@@ -103,6 +110,10 @@ router.put("/:id", checkAuth, multer({storage}).single("image"), (req, res, next
         message: "Not authorized!",
       });
     }
+  }).catch(() => {
+    res.status(500).json({
+      message: 'Updating post failed!'
+    })
   });
 });
 
@@ -115,7 +126,11 @@ router.get("/:id", (req, res, next) => {
         res.status(404).json({ message: "Post not found" });
       }
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Error fetching post!'
+      })
+    });
 });
 
 router.delete("/:id", checkAuth, (req, res, next) => {
@@ -126,7 +141,11 @@ router.delete("/:id", checkAuth, (req, res, next) => {
     } else {
       res.status(401).json({ message: "Not authorized" });
     }
-  });
+  }).catch((error) => {
+    res.status(500).json({
+      message: 'Error deleting selected post!'
+    })
+  });;
 });
 
 module.exports = router;

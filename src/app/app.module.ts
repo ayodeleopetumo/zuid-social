@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
-import { UIModule } from './ui/components/header/ui.module';
+import { UIModule } from './ui/ui.module';
 
 import { AppComponent } from './app.component';
 import { FeaturesModule } from './features/features.module';
