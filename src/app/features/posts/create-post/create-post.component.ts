@@ -3,9 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post.model';
-import { mimeTypeValidator } from "../mime-type.validator";
-import { AuthService } from "../../../core/components/auth/auth.service";
-import { Subject, takeUntil } from "rxjs";
+import { mimeTypeValidator } from '../mime-type.validator';
+import { AuthService } from '../../auth/auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 enum Mode {
   CREATE,
@@ -35,48 +35,56 @@ export class CreatePostComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.authService.getAuthStatus().pipe(takeUntil(this.destroyed$)).subscribe(() => this.isLoading = false);
+    this.authService
+      .getAuthStatus()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => (this.isLoading = false));
     this.initForm();
     this.getPost();
   }
 
   initForm() {
     this.form = new FormGroup({
-      title: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      title: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+      ]),
       content: new FormControl('', [Validators.required]),
-      image: new FormControl(null, Validators.required, mimeTypeValidator)
-    })
+      image: new FormControl(null, Validators.required, mimeTypeValidator),
+    });
   }
 
   getPost() {
-    this.activatedRoute.paramMap.pipe(takeUntil(this.destroyed$)).subscribe((param: ParamMap) => {
-      if (param.has('postId')) {
-        this.pageMode = Mode.EDIT;
-        this.postId = param.get('postId')!;
-        this.postsService
-          .getPost(this.postId)
-          .pipe(takeUntil(this.destroyed$))
-          .subscribe((post) => {
-            this.isLoading = false;
-            this.post = {
-              id: post._id,
-              content: post.content,
-              title: post.title,
-              image: post.image,
-              creator: post.creator
-            };
-            this.form.setValue({
-              title: post.title,
-              content: post.content,
-              image: post.image
-            })
-          });
-      } else {
-        this.isLoading = false;
-        this.pageMode = Mode.CREATE;
-        this.postId = null;
-      }
-    });
+    this.activatedRoute.paramMap
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((param: ParamMap) => {
+        if (param.has('postId')) {
+          this.pageMode = Mode.EDIT;
+          this.postId = param.get('postId')!;
+          this.postsService
+            .getPost(this.postId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe((post) => {
+              this.isLoading = false;
+              this.post = {
+                id: post._id,
+                content: post.content,
+                title: post.title,
+                image: post.image,
+                creator: post.creator,
+              };
+              this.form.setValue({
+                title: post.title,
+                content: post.content,
+                image: post.image,
+              });
+            });
+        } else {
+          this.isLoading = false;
+          this.pageMode = Mode.CREATE;
+          this.postId = null;
+        }
+      });
   }
 
   onSavePost() {
@@ -97,13 +105,13 @@ export class CreatePostComponent implements OnInit, OnDestroy {
 
   onImageSelected(evt: Event) {
     const file = (evt.target as HTMLInputElement).files![0];
-    this.form.patchValue({image: file});
+    this.form.patchValue({ image: file });
     this.form.get('image')?.updateValueAndValidity();
 
     const reader = new FileReader();
     reader.onload = () => {
       this.imagePreview = reader.result as string;
-    }
+    };
     reader.readAsDataURL(file);
   }
 
