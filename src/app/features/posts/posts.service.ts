@@ -11,7 +11,7 @@ const API_URL = `${environment.apiBaseUrl}/posts/`;
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<{ posts: Post[]; count: number }>();
+  private postsUpdated = new Subject<{ posts: Post[]; count: number } | null>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -43,12 +43,15 @@ export class PostsService {
           };
         })
       )
-      .subscribe((data) => {
-        this.posts = data.posts;
-        this.postsUpdated.next({
-          posts: [...this.posts],
-          count: data.count,
-        });
+      .subscribe({
+        next: (data) => {
+          this.posts = data.posts;
+          this.postsUpdated.next({
+            posts: [...this.posts],
+            count: data.count,
+          });
+        },
+        error: () => this.postsUpdated.next(null),
       });
   }
 
@@ -73,8 +76,9 @@ export class PostsService {
     postData.append('image', post.image!, post.title);
     this.http
       .post<{ message: string; post: Post }>(API_URL, postData)
-      .subscribe(() => {
-        this.router.navigate(['/']);
+      .subscribe({
+        next: () => this.router.navigate(['/']),
+        error: (err) => console.warn('e: ', err),
       });
   }
 
