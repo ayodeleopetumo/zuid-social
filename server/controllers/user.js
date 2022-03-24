@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
-exports.createUser = (req, res, next) => {
+exports.createUser = (req, res) => {
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const userData = new User({
       email: req.body.email,
@@ -25,23 +25,23 @@ exports.createUser = (req, res, next) => {
   });
 };
 
-exports.userLogin = (req, res, next) => {
+exports.userLogin = (req, res) => {
   let returnedUser;
 
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
         return res.status(401).json({
-          message: "Auth failed - no user",
+          message: "Authentication failed",
         });
       }
       returnedUser = user;
       return bcrypt.compare(req.body.password, user.password);
     })
     .then((result) => {
-      if (result.statusCode === 401) {
+      if (!result || result.statusCode === 401) {
         return res.status(401).json({
-          message: "Auth failed - no result",
+          message: "Authentication failed",
         });
       }
       const token = jwt.sign(

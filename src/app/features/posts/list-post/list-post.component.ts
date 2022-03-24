@@ -34,10 +34,10 @@ export class ListPostComponent implements OnInit, OnDestroy {
     this.postsService
       .getPostUpdateListener()
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((data: { posts: Post[]; count: number }) => {
+      .subscribe((data: { posts: Post[]; count: number } | null) => {
         this.isLoading = false;
-        this.totalPosts = data.count;
-        this.posts = data.posts;
+        this.totalPosts = data?.count || 0;
+        this.posts = data?.posts || [];
       });
     this.isUserAuthenticated = this.authService.getIsAuthenticated();
     this.authService

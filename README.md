@@ -16,11 +16,12 @@ It also features:
 * Image uploads
 * Error handling, etc
 
-[Demo Link]()
+[Demo Link](https://zuid-social.netlify.app/)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.2.
 
 ## Development server
 - Clone the repo locally.
 - Run `npm install` in your terminal in the project folder.
-- Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Run `npm run serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Run `npm run start:server` to the NodeJS backend for the application.

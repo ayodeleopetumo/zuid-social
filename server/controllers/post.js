@@ -1,6 +1,6 @@
 const Post = require("../models/post");
 
-exports.createPost = (req, res, next) => {
+exports.createPost = (req, res) => {
   const url = req.protocol + "://" + req.get("host");
 
   const post = new Post({
@@ -12,7 +12,6 @@ exports.createPost = (req, res, next) => {
   post
     .save()
     .then((savedPost) => {
-      console.log(savedPost);
       res.status(201).json({
         message: "Post added successfully",
         post: {
@@ -21,14 +20,10 @@ exports.createPost = (req, res, next) => {
         },
       });
     })
-    .catch(() => {
-      res.status(500).json({
-        message: "Creating post failed!",
-      });
-    });
+    .catch(() => res.status(500).json({ message: "Creating post failed!" }));
 };
 
-exports.getAllPosts = (req, res, next) => {
+exports.getAllPosts = (req, res) => {
   const pageSize = +req.query.pageSize;
   const currentPage = +req.query.page;
   const postQuery = Post.find();
@@ -57,7 +52,7 @@ exports.getAllPosts = (req, res, next) => {
     });
 };
 
-exports.updatePost = (req, res, next) => {
+exports.updatePost = (req, res) => {
   let url;
   const post = new Post({
     _id: req.body.id,
@@ -92,7 +87,7 @@ exports.updatePost = (req, res, next) => {
     });
 };
 
-exports.getSinglePost = (req, res, next) => {
+exports.getSinglePost = (req, res) => {
   Post.findById(req.params.id)
     .then((post) => {
       if (post) {
@@ -108,7 +103,7 @@ exports.getSinglePost = (req, res, next) => {
     });
 };
 
-exports.deletePost = (req, res, next) => {
+exports.deletePost = (req, res) => {
   Post.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then((d) => {
       console.log(d);
