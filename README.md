@@ -17,8 +17,10 @@ It also features:
 * Error handling, etc
 
 [Demo Link](https://zuid-social.netlify.app/)
-- login: test@test.com
-- pwd: testpaasword
+```
+login: test@test.com
+password: testpaasword
+```
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.2.
 
