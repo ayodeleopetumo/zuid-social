@@ -14,7 +14,7 @@ It also features:
 * Authorisation
 * Pagination
 * Image uploads
-* Error handling, etc
+* Error handling
 
 [Demo Link](https://zuid-social.netlify.app/)
 ```
